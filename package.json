@@ -1,6 +1,6 @@
 {
   "name": "dsh-adrian-inject-context",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Inject Context for DeepSeek Harness (DSH): persist your own context entries and inject them as a standalone 'Remember:' row — right after your message — per turn or once per session (per-entry 'Every turn' switch). Simple/Advanced datasets, native Settings editor, standalone manager page.",
   "type": "module",
   "main": "lib/index.js",
