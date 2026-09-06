@@ -1,0 +1,7 @@
+# adrian-inject-context bundle patch: one host row over the profile.
+# The row name resolves from the profile's own node_modules where
+# `dsh plugin --profile web-test add /root/dsh-plugins/adrian-inject-context`
+# installed this package.
+- insert:
+    - id: adrian-inject-context
+      name: adrian-inject-context

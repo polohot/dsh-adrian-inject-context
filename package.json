@@ -1,0 +1,48 @@
+{
+  "name": "dsh-adrian-inject-context",
+  "version": "0.2.0",
+  "description": "Inject Context for DeepSeek Harness (DSH): persist your own context entries and inject them as a standalone 'Remember:' row — right after the system prompt, before your message — on every turn. Simple/Advanced datasets, native Settings editor, standalone manager page.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "deepseek-harness",
+    "context",
+    "context-injection",
+    "injection",
+    "system-prompt",
+    "agent",
+    "plugin"
+  ],
+  "author": "polohot",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polohot/dsh-adrian-inject-context.git"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
