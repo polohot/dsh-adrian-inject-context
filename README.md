@@ -11,6 +11,16 @@ Inject Context for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deeps
 - **Persistent** — datasets and active mode survive sessions and restarts
 - **Standalone manager page** — also available at `/adrian-inject-context`
 
+## Screenshots
+
+**Settings → Inject Context — manage your datasets**
+
+![Inject Context settings](docs/settings-inject-context.png)
+
+**Remember: row in the Trajectory**
+
+![Remember row in Trajectory](docs/trajectory-remember-row.png)
+
 ## Install
 
 ```sh
