@@ -31,13 +31,36 @@ dsh plugin --profile web add polohot/dsh-adrian-inject-context
 ## Usage
 
 1. Open **Settings → Inject Context**
-2. Add context entries, toggle checkboxes, **Save**
+2. Add context entries; per row, two switches:
+   - **Enabled** — off = never injected
+   - **Every turn** (ticked by default) — ticked = injected before every message; unticked = only the first message of a session
 3. Pick the active tab (**Simple**/**Advanced**) — its dataset feeds the injection
 4. Send any message and check the **Trajectory**: your `Remember:` block sits between SYSTEM and your message
 
+### Per-entry frequency (v0.3.0)
+
+| Enabled | Every turn | Behavior |
+| --- | --- | --- |
+| off | — | never injected |
+| on | ticked | injected before **every** turn of every session (the default, and the migration default for existing entries) |
+| on | unticked | injected only at the **start of a session** (its first turn), never again in that session |
+
+Once-per-session entries are **restart-safe**: a process restart never re-injects a once-entry into a session that already carries it. Prior injection is detected from the session's persisted sourced-message surface (the `adrian-inject-context:lessons` rows) plus in-memory per-session tracking while the process lives. Unticking an entry mid-session lets it appear on the next message exactly once more, then never again — per dataset, so Simple and Advanced stay fully independent.
+
 ## Configuration
 
-Store: `~/.dsh/adrian-inject-context.json` (schema v2: mode + simple/advanced datasets, auto-migrated from v1)
+Store: `~/.dsh/adrian-inject-context.json` (schema v2, auto-migrated from v1):
+
+```json
+{
+  "version": 2,
+  "mode": "simple",
+  "simple":   { "lessons": [{ "id": 1, "text": "…", "enabled": true, "everyTurn": true }] },
+  "advanced": { "lessons": [] }
+}
+```
+
+`everyTurn` was added in v0.3.0 without a schema bump — entries missing the field default to `true` (the previous every-turn behavior).
 
 ## Requirements
 
@@ -45,7 +68,7 @@ Store: `~/.dsh/adrian-inject-context.json` (schema v2: mode + simple/advanced da
 
 ## How it works
 
-Host-side: an `agent/pre-step` waterfall listener prepends the plugin's own independently-sourced user-role message (the same pattern as `dsh-agent-instructions`), freshly read from the store on every step. Client-side: a settings-section module renders the manager against two host routes. Zero system-prompt modification.
+Host-side: an `agent/pre-step` waterfall listener composes the block per step — all enabled every-turn entries plus enabled once-entries not yet delivered to that session — and prepends the plugin's own independently-sourced user-role message (the same pattern as `dsh-agent-instructions`), freshly read from the store on every step. It never injects into an empty entering batch (the agent loop's turn-close signal). Client-side: a settings-section module renders the manager against two host routes. Zero system-prompt modification.
 
 ## License
 
