@@ -4,4 +4,4 @@
 # installed this package.
 - insert:
     - id: adrian-inject-context
-      name: adrian-inject-context
+      name: dsh-adrian-inject-context
