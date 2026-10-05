@@ -64,11 +64,36 @@ Store: `~/.dsh/adrian-inject-context.json` (schema v2, auto-migrated from v1):
 
 ## Requirements
 
-- DeepSeek Harness `dsh` ≥ 0.1.2-rc.1 (tested on web profile)
+- DeepSeek Harness `dsh` ≥ 0.2.0-rc.2 (tested on the web profile)
+- Not compatible with `dsh` 0.1.x — see *Session format v4* below
 
 ## How it works
 
 Host-side: an `agent/pre-step` waterfall listener composes the block per step — all enabled every-turn entries plus enabled once-entries not yet delivered to that session — and splices the plugin's own independently-sourced user-role message right after the turn's user message (the same pattern as `dsh-agent-instructions`), freshly read from the store on every step. It never injects into an empty entering batch (the agent loop's turn-close signal). Client-side: a settings-section module renders the manager against two host routes. Zero system-prompt modification.
+
+### Session format v4 (v0.4.0)
+
+DSH 0.2.0 ships **Session format v4**, which retired the catch-all
+`{ kind: 'plugin', plugin: '…' }` message source. That kind is now *refused at
+admission*: emitting it raises `SessionFormatError` and **aborts the whole turn**
+with `format v4 message requires a producer-owned source kind`.
+
+This plugin emits the v4 producer-owned form of its own identity:
+
+```js
+source: { kind: 'plugin:adrian-inject-context:lessons' }
+```
+
+That is the same kind the shipped v3→v4 migration derives for a third-party
+plugin, so live rows and rows migrated from older sessions share one identity and
+the once-per-session surface scan recognises both.
+
+The row's position is decided by a **positive** test — a user-role row counts as
+the turn's message only when `source.kind === 'user'`. Every other producer (the
+runtime-context snapshot, agent instructions, tool and model rows) declares its
+own kind and is skipped. v0.3.2 blocklisted the kinds it knew about, so the
+runtime-context snapshot was mistaken for the user message and the row landed
+*after* the snapshot instead of after the message it answers.
 
 ## License
 
